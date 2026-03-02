@@ -4,6 +4,7 @@ import api from "@/lib/api";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Lock, Shield, Eye, EyeOff, CheckCircle2 } from "lucide-react";
+import AuthGuard from "@/components/AuthGuard";
 
 export default function ChangePassword() {
     const [tempPassword, setTempPassword] = useState("");
@@ -62,7 +63,8 @@ export default function ChangePassword() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-900 via-[#0a0f1e] to-black">
+        <AuthGuard>
+            <div className="min-h-screen flex items-center justify-center p-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-900 via-[#0a0f1e] to-black">
             <div className="glass-panel w-full max-w-sm p-6 rounded-2xl shadow-xl border border-white/10 relative overflow-hidden animate-fade-in">
                 <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
 
@@ -190,5 +192,6 @@ export default function ChangePassword() {
                 </div>
             </div>
         </div>
+            </AuthGuard>
     );
 }

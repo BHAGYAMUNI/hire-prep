@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Brain, ArrowLeft, Clock, Target, CheckCircle, XCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import api from '@/lib/api';
+import AuthGuard from '@/components/AuthGuard';
 
 interface AptitudeProblem {
   id: number;
@@ -165,7 +166,8 @@ export default function AptitudeChapterPage({ params }: { params: Promise<{ id: 
   }
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <AuthGuard>
+      <div className="min-h-screen bg-slate-900">
       {/* Header */}
       <div className="border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 py-4">
@@ -357,5 +359,6 @@ export default function AptitudeChapterPage({ params }: { params: Promise<{ id: 
         </div>
       </div>
     </div>
+      </AuthGuard>
   );
 }

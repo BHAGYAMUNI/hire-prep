@@ -196,15 +196,25 @@ export default function Register() {
           </div>
         </div>
 
-        <div className="flex justify-center z-10 relative mb-4">
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={() => setError("Google Sign-In failed")}
-            theme="filled_black"
-            shape="pill"
-            text="signup_with"
-          />
-        </div>
+        {/* Google OAuth - Only show if configured */}
+        {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ? (
+          <div className="flex justify-center z-10 relative mb-4">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => setError("Google Sign-In failed")}
+              theme="filled_black"
+              shape="pill"
+              text="signup_with"
+            />
+          </div>
+        ) : (
+          <div className="text-center text-xs text-gray-500 mb-4">
+            <div className="p-3 bg-white/5 rounded-lg border border-white/10">
+              <p className="text-gray-400 mb-1">🔐 Google Sign-Up</p>
+              <p className="text-gray-500 text-xs">Configure Google OAuth to enable</p>
+            </div>
+          </div>
+        )}
 
         <div className="mt-5 text-center text-xs text-gray-400 relative z-10">
           Already have an account?{" "}

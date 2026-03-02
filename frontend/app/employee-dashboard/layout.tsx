@@ -9,7 +9,8 @@ import {
     Database,
     LogOut,
     Menu,
-    X
+    X,
+    Brain
 } from "lucide-react";
 import { employeeApi } from "@/lib/api";
 
@@ -106,6 +107,15 @@ export default function EmployeeDashboardLayout({
                         >
                             <Database className="w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
                             Manage SQL
+                        </Link>
+
+                        <Link
+                            href="/employee-dashboard/aptitude"
+                            onClick={() => setIsSidebarOpen(false)}
+                            className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-all group"
+                        >
+                            <Brain className="w-5 h-5 text-gray-400 group-hover:text-purple-400 transition-colors" />
+                            Manage Aptitude
                         </Link>
                     </nav>
 

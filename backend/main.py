@@ -26,8 +26,19 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_headers=[
+        "*",
+        "Authorization",
+        "Content-Type",
+        "Accept",
+        "X-Requested-With",
+        "Origin",
+        "Access-Control-Request-Method",
+        "Access-Control-Request-Headers"
+    ],
+    expose_headers=["*"],
+    allow_origin_regex="http://(localhost|127\.0\.0\.1|192\.168\.|10\.|172\.|0\.0\.0\.0)(:[0-9]+)?"  # Allow any local/ private network origin
 )
 
 app.include_router(auth.router)

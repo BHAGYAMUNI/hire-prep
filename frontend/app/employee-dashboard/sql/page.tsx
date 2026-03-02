@@ -4,6 +4,7 @@ import { employeeApi } from "@/lib/api";
 import { Trash2, Edit, Plus, Database, AlertCircle, Server } from "lucide-react";
 import SQLChapterFormModal from "./components/SQLChapterFormModal";
 import SQLProblemFormModal from "./components/SQLProblemFormModal";
+import EmployeeAuthGuard from "@/components/EmployeeAuthGuard";
 
 interface SQLProblem {
     id: number;
@@ -128,7 +129,8 @@ export default function SQLManagement() {
     };
 
     return (
-        <div className="space-y-8 animate-fade-in pb-12 relative">
+        <EmployeeAuthGuard>
+            <div className="space-y-8 animate-fade-in pb-12 relative">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-6">
                 <div>
                     <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
@@ -236,5 +238,6 @@ export default function SQLManagement() {
                 />
             )}
         </div>
+            </EmployeeAuthGuard>
     );
 }

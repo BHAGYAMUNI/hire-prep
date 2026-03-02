@@ -4,6 +4,7 @@ import api from '@/lib/api';
 import Link from 'next/link';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Search, Filter, ArrowRight } from 'lucide-react';
+import AuthGuard from '@/components/AuthGuard';
 
 interface Problem {
   id: number;
@@ -74,7 +75,8 @@ export default function Dashboard() {
   const progress = totalProblems > 0 ? (solvedCount / totalProblems) * 100 : 0;
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 p-6 pt-6 max-w-7xl mx-auto min-h-screen">
+    <AuthGuard>
+      <div className="flex flex-col lg:flex-row gap-8 p-6 pt-6 max-w-7xl mx-auto min-h-screen">
       {/* Sidebar */}
       <div className="w-full lg:w-1/4 space-y-6">
         {/* Progress Card */}
@@ -303,6 +305,6 @@ export default function Dashboard() {
         )}
       </div>
     </div>
+    </AuthGuard>
   );
 }
-

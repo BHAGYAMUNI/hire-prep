@@ -1,13 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
 import { employeeApi } from "@/lib/api";
-import { Users, Code2, Database, Activity, RefreshCw } from "lucide-react";
+import { Users, Code2, Database, Activity, RefreshCw, Brain } from "lucide-react";
+import EmployeeAuthGuard from "@/components/EmployeeAuthGuard";
 
 interface Metrics {
     users: number;
     problems: number;
     submissions: number;
     sql_problems: number;
+    aptitude_chapters: number;
+    aptitude_problems: number;
 }
 
 export default function EmployeeDashboardOverview() {
@@ -31,7 +34,8 @@ export default function EmployeeDashboardOverview() {
     }, []);
 
     return (
-        <div className="space-y-8 animate-fade-in pb-12">
+        <EmployeeAuthGuard>
+            <div className="space-y-8 animate-fade-in pb-12">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-bold text-white mb-2">Platform Overview</h1>
@@ -56,13 +60,13 @@ export default function EmployeeDashboardOverview() {
                     ))}
                 </div>
             ) : metrics ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
                     <MetricCard
                         title="Total Users"
                         value={metrics.users.toLocaleString()}
-                        icon={<Users className="w-6 h-6 text-purple-400" />}
-                        gradient="from-purple-500/20 to-transparent"
-                        border="border-purple-500/20"
+                        icon={<Users className="w-6 h-6 text-blue-400" />}
+                        gradient="from-blue-500/20 to-transparent"
+                        border="border-blue-500/20"
                     />
                     <MetricCard
                         title="DSA Problems"
@@ -77,6 +81,20 @@ export default function EmployeeDashboardOverview() {
                         icon={<Database className="w-6 h-6 text-blue-400" />}
                         gradient="from-blue-500/20 to-transparent"
                         border="border-blue-500/20"
+                    />
+                    <MetricCard
+                        title="Aptitude Chapters"
+                        value={metrics.aptitude_chapters.toLocaleString()}
+                        icon={<Brain className="w-6 h-6 text-purple-400" />}
+                        gradient="from-purple-500/20 to-transparent"
+                        border="border-purple-500/20"
+                    />
+                    <MetricCard
+                        title="Aptitude Problems"
+                        value={metrics.aptitude_problems.toLocaleString()}
+                        icon={<Brain className="w-6 h-6 text-pink-400" />}
+                        gradient="from-pink-500/20 to-transparent"
+                        border="border-pink-500/20"
                     />
                     <MetricCard
                         title="Total Submissions"
@@ -97,7 +115,8 @@ export default function EmployeeDashboardOverview() {
                 <Activity className="w-12 h-12 mb-4 opacity-50" />
                 <p>Detailed performance charts coming soon</p>
             </div>
-        </div>
+            </div>
+            </EmployeeAuthGuard>
     );
 }
 

@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
-import api from "@/lib/api";
+import api, { employeeApi } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LogIn, User, Lock } from "lucide-react";
+import { LogIn, User, Lock, Building2 } from "lucide-react";
 import { GoogleLogin } from "@react-oauth/google";
 
 export default function Login() {
@@ -11,6 +11,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [userType, setUserType] = useState<"user" | "employee">("user");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -22,16 +23,21 @@ export default function Login() {
       formData.append("username", username);
       formData.append("password", password);
 
-      const response = await api.post("/auth/login", formData);
-      localStorage.setItem("access_token", response.data.access_token);
-      // First login: redirect to change-password page
-      if (response.data.reset_password === 1) {
+      const endpoint = userType === "employee" ? "/employee/auth/login" : "/auth/login";
+      const apiInstance = userType === "employee" ? employeeApi : api;
+      const tokenKey = userType === "employee" ? "employee_access_token" : "access_token";
+      const redirectPath = userType === "employee" ? "/employee-dashboard" : "/dashboard";
+
+      const response = await apiInstance.post(endpoint, formData);
+      localStorage.setItem(tokenKey, response.data.access_token);
+      
+      if (response.data.reset_password === 1 && userType === "user") {
         router.push("/change-password");
       } else {
-        router.push("/dashboard");
+        router.push(redirectPath);
       }
     } catch {
-      setError("Invalid username or password");
+      setError(`Invalid username or password for ${userType}`);
     } finally {
       setIsLoading(false);
     }
@@ -41,12 +47,18 @@ export default function Login() {
     setIsLoading(true);
     setError("");
     try {
-      const response = await api.post("/auth/google", { credential: credentialResponse.credential });
-      localStorage.setItem("access_token", response.data.access_token);
-      if (response.data.reset_password === 1) {
+      const endpoint = userType === "employee" ? "/employee/auth/google" : "/auth/google";
+      const apiInstance = userType === "employee" ? employeeApi : api;
+      const tokenKey = userType === "employee" ? "employee_access_token" : "access_token";
+      const redirectPath = userType === "employee" ? "/employee-dashboard" : "/dashboard";
+
+      const response = await apiInstance.post(endpoint, { credential: credentialResponse.credential });
+      localStorage.setItem(tokenKey, response.data.access_token);
+      
+      if (response.data.reset_password === 1 && userType === "user") {
         router.push("/change-password");
       } else {
-        router.push("/dashboard");
+        router.push(redirectPath);
       }
     } catch (err: any) {
       setError(err.response?.data?.detail || "Google authentication failed");
@@ -65,15 +77,45 @@ export default function Login() {
         {/* Header */}
         <div className="text-center mb-6 relative z-10">
           <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mx-auto mb-3 border border-blue-500/20">
-            <LogIn className="w-6 h-6 text-blue-400" />
+            {userType === "employee" ? (
+              <Building2 className="w-6 h-6 text-purple-400" />
+            ) : (
+              <LogIn className="w-6 h-6 text-blue-400" />
+            )}
           </div>
 
           <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-500 via-purple-400 to-indigo-500 bg-clip-text text-transparent mb-1">
-            Welcome Back
+            {userType === "employee" ? "Employee Portal" : "Welcome Back"}
           </h1>
           <p className="text-xs text-gray-400">
-            Login to continue your journey
+            {userType === "employee" ? "Login to access employee dashboard" : "Login to continue your journey"}
           </p>
+        </div>
+
+        {/* User Type Toggle */}
+        <div className="flex bg-black/30 border border-white/10 rounded-lg p-1 mb-6 relative z-10">
+          <button
+            onClick={() => setUserType("user")}
+            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+              userType === "user"
+                ? "bg-blue-500/20 text-blue-300 border border-blue-500/30"
+                : "text-gray-400 hover:text-white"
+            }`}
+          >
+            <User className="w-4 h-4 inline mr-2" />
+            User
+          </button>
+          <button
+            onClick={() => setUserType("employee")}
+            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+              userType === "employee"
+                ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
+                : "text-gray-400 hover:text-white"
+            }`}
+          >
+            <Building2 className="w-4 h-4 inline mr-2" />
+            Employee
+          </button>
         </div>
 
         {/* Form */}
@@ -147,24 +189,45 @@ export default function Login() {
           </div>
         </div>
 
-        <div className="flex justify-center z-10 relative mb-4">
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={() => setError("Google Sign-In failed")}
-            theme="filled_black"
-            shape="pill"
-          />
-        </div>
+        {/* Google OAuth - Only show if configured */}
+        {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ? (
+          <div className="flex justify-center z-10 relative mb-4">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => setError("Google Sign-In failed")}
+              theme="filled_black"
+              shape="pill"
+            />
+          </div>
+        ) : (
+          <div className="text-center text-xs text-gray-500 mb-4">
+            <div className="p-3 bg-white/5 rounded-lg border border-white/10">
+              <p className="text-gray-400 mb-1">🔐 Google Sign-In</p>
+              <p className="text-gray-500 text-xs">Configure Google OAuth to enable</p>
+            </div>
+          </div>
+        )}
 
         {/* Footer */}
         <div className="mt-5 text-center text-xs text-gray-400 relative z-10">
-          Don’t have an account?{" "}
-          <Link
-            href="/register"
-            className="text-blue-400 hover:text-blue-300 font-semibold hover:underline transition-colors"
-          >
-            Create one
-          </Link>
+          {userType === "user" ? (
+            <>
+              Don't have an account?{" "}
+              <Link
+                href="/register"
+                className="text-blue-400 hover:text-blue-300 font-semibold hover:underline transition-colors"
+              >
+                Create one
+              </Link>
+            </>
+          ) : (
+            <>
+              Employee access is restricted.{" "}
+              <span className="text-purple-400 font-semibold">
+                Contact administrator
+              </span>
+            </>
+          )}
         </div>
       </div>
     </div>

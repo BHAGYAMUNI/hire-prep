@@ -5,6 +5,7 @@ import Editor from '@monaco-editor/react';
 import { Play, RotateCcw, CheckCircle2, AlertCircle, Terminal, ChevronDown, ChevronUp, Code2, Cpu, Timer, ChevronLeft, ChevronRight } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 import { useRouter } from 'next/navigation';
+import AuthGuard from '@/components/AuthGuard';
 
 interface Problem {
     id: number;
@@ -178,7 +179,8 @@ int main() {
     );
 
     return (
-        <div className="flex flex-col lg:flex-row h-screen pt-5 pb-4 px-4 gap-4 max-w-[1920px] mx-auto overflow-hidden">
+        <AuthGuard>
+            <div className="flex flex-col lg:flex-row h-screen pt-5 pb-4 px-4 gap-4 max-w-[1920px] mx-auto overflow-hidden">
             {/* Left Panel: Problem Description */}
             <div className="w-full lg:w-[35%] flex flex-col h-full animate-fade-in lg:mr-6">
                 <div className="glass-panel p-0 rounded-2xl flex-1 flex flex-col overflow-hidden border border-white/10 shadow-2xl">
@@ -369,6 +371,7 @@ int main() {
                     )}
                 </div>
             </div>
-        </div>
+            </div>
+            </AuthGuard>
     );
 }

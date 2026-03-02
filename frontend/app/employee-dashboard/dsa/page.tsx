@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { employeeApi } from "@/lib/api";
 import { Trash2, Edit, Plus, AlertTriangle, Code2 } from "lucide-react";
 import ProblemFormModal from "./components/ProblemFormModal";
+import EmployeeAuthGuard from "@/components/EmployeeAuthGuard";
 
 interface TestCase {
     input: string;
@@ -77,7 +78,8 @@ export default function DSAManagement() {
     };
 
     return (
-        <div className="space-y-6 animate-fade-in pb-12 relative">
+        <EmployeeAuthGuard>
+            <div className="space-y-6 animate-fade-in pb-12 relative">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-6">
                 <div>
                     <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
@@ -164,5 +166,6 @@ export default function DSAManagement() {
                 />
             )}
         </div>
+            </EmployeeAuthGuard>
     );
 }

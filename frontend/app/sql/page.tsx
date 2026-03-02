@@ -4,6 +4,7 @@ import api from '@/lib/api';
 import Link from 'next/link';
 import { Database, BookOpen, ChevronRight, ChevronLeft } from 'lucide-react';
 import Pagination from '@/components/Pagination';
+import AuthGuard from '@/components/AuthGuard';
 
 interface SQLChapter {
   id: number;
@@ -56,7 +57,8 @@ export default function SQLDashboard() {
   };
 
   return (
-    <div className="container mx-auto px-6 py-8 max-w-7xl">
+    <AuthGuard>
+      <div className="container mx-auto px-6 py-8 max-w-7xl">
       <div className="mb-8 border-b border-white/10 pb-4">
         <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
           SQL Mastery
@@ -146,5 +148,6 @@ export default function SQLDashboard() {
         </div>
       </div>
     </div>
+    </AuthGuard>
   );
 }

@@ -21,7 +21,7 @@ export default function CompaniesPage() {
         const response = await api.get('/problems/companies/list');
         setCompanies(response.data);
       } catch (error) {
-        console.error('Failed to fetch companies');
+        console.error('Failed to fetch companies:', error);
       }
     };
     fetchCompanies();

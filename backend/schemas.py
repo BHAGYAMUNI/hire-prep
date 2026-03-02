@@ -214,6 +214,12 @@ class AptitudeChapterCreate(AptitudeChapterBase):
     pass
 
 
+class AptitudeChapterUpdate(BaseModel):
+    title: Optional[str] = None
+    content: Optional[str] = None
+    order: Optional[int] = None
+
+
 class AptitudeChapter(AptitudeChapterBase):
     id: int
     problems: List["AptitudeProblem"] = []
@@ -235,6 +241,17 @@ class AptitudeProblemBase(BaseModel):
 
 class AptitudeProblemCreate(AptitudeProblemBase):
     chapter_id: int
+
+
+class AptitudeProblemUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    question_type: Optional[str] = None
+    difficulty: Optional[str] = None
+    options: Optional[List[str]] = None
+    correct_answer: Optional[str] = None
+    explanation: Optional[str] = None
+    time_limit: Optional[int] = None
 
 
 class AptitudeProblem(AptitudeProblemBase):

@@ -12,6 +12,7 @@ import email_service
 import models
 import schemas
 import utils
+import dependencies
 from config import settings
 
 router = APIRouter(
@@ -260,3 +261,14 @@ def logout(
 
     _clear_refresh_cookie(response)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+# ─────────────────────────────────────────────
+# GET /employee/auth/me
+# ─────────────────────────────────────────────
+@router.get("/me", response_model=schemas.Employee)
+async def read_employee_me(
+    current_employee: models.Employee = Depends(dependencies.get_current_employee),
+    db: Session = Depends(database.get_db),
+):
+    return current_employee

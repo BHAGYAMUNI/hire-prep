@@ -10,6 +10,8 @@ import utils
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 oauth2_scheme_optional = OAuth2PasswordBearer(tokenUrl="auth/login", auto_error=False)
+oauth2_employee_scheme = OAuth2PasswordBearer(tokenUrl="employee/auth/login")
+oauth2_employee_scheme_optional = OAuth2PasswordBearer(tokenUrl="employee/auth/login", auto_error=False)
 
 
 def get_current_user(
@@ -52,7 +54,7 @@ def get_current_user_optional(
 
 
 def get_current_employee(
-    token: str = Depends(oauth2_scheme), db: Session = Depends(database.get_db)
+    token: str = Depends(oauth2_employee_scheme), db: Session = Depends(database.get_db)
 ):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

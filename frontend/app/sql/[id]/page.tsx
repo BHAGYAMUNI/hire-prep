@@ -7,6 +7,7 @@ import { Play, CheckCircle, XCircle, Database, Table as TableIcon, Menu, Chevron
 import ResizableSplit from '@/components/ResizableSplit';
 import { useRouter } from 'next/navigation';
 import ThemeToggle from '@/components/ThemeToggle';
+import AuthGuard from '@/components/AuthGuard';
 
 interface SQLChapter {
     id: number;
@@ -188,7 +189,8 @@ export default function SQLWorkspace({ params }: { params: Promise<{ id: string 
     );
 
     return (
-        <div className="flex flex-col h-screen overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-900 via-[#0a0f1e] to-black bright:bg-bright-background">
+        <AuthGuard>
+            <div className="flex flex-col h-screen overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-900 via-[#0a0f1e] to-black bright:bg-bright-background">
             {/* Header */}
             <div className="sql-header h-16 border-b border-white/5 dark:border-white/5 bright:border-bright-border bg-gray-900/50 dark:bg-gray-900/50 bright:bg-white bright:text-black bright:backdrop-blur-none flex items-center justify-between px-6 sticky top-2 z-40">
                     <div className="flex items-center gap-4">
@@ -411,5 +413,6 @@ export default function SQLWorkspace({ params }: { params: Promise<{ id: string 
                 />
             </div>
         </div>
+        </AuthGuard>
     );
 }

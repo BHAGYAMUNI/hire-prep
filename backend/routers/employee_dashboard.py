@@ -21,12 +21,16 @@ def get_metrics(db: Session = Depends(database.get_db)):
     problem_count = db.query(models.Problem).count()
     submission_count = db.query(models.Submission).count()
     sql_problem_count = db.query(models.SQLProblem).count()
+    aptitude_chapter_count = db.query(models.AptitudeChapter).count()
+    aptitude_problem_count = db.query(models.AptitudeProblem).count()
     
     return {
         "users": user_count,
         "problems": problem_count,
         "submissions": submission_count,
-        "sql_problems": sql_problem_count
+        "sql_problems": sql_problem_count,
+        "aptitude_chapters": aptitude_chapter_count,
+        "aptitude_problems": aptitude_problem_count
     }
 
 
@@ -146,6 +150,80 @@ def update_sql_problem(problem_id: int, problem: schemas.SQLProblemUpdate, db: S
 @router.delete("/sql/problems/{problem_id}")
 def delete_sql_problem(problem_id: int, db: Session = Depends(database.get_db)):
     db_problem = db.query(models.SQLProblem).filter(models.SQLProblem.id == problem_id).first()
+    if not db_problem:
+        raise HTTPException(status_code=404, detail="Problem not found")
+        
+    db.delete(db_problem)
+    db.commit()
+    return {"message": "Problem deleted successfully"}
+
+
+# ==========================================
+# Aptitude Chapters & Problems Management
+# ==========================================
+
+@router.post("/aptitude/chapters", response_model=schemas.AptitudeChapter)
+def create_aptitude_chapter(chapter: schemas.AptitudeChapterCreate, db: Session = Depends(database.get_db)):
+    db_chapter = models.AptitudeChapter(**chapter.dict())
+    db.add(db_chapter)
+    db.commit()
+    db.refresh(db_chapter)
+    return db_chapter
+
+
+@router.put("/aptitude/chapters/{chapter_id}", response_model=schemas.AptitudeChapter)
+def update_aptitude_chapter(chapter_id: int, chapter: schemas.AptitudeChapterUpdate, db: Session = Depends(database.get_db)):
+    db_chapter = db.query(models.AptitudeChapter).filter(models.AptitudeChapter.id == chapter_id).first()
+    if not db_chapter:
+        raise HTTPException(status_code=404, detail="Chapter not found")
+        
+    update_data = chapter.dict(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_chapter, key, value)
+            
+    db.commit()
+    db.refresh(db_chapter)
+    return db_chapter
+
+
+@router.delete("/aptitude/chapters/{chapter_id}")
+def delete_aptitude_chapter(chapter_id: int, db: Session = Depends(database.get_db)):
+    db_chapter = db.query(models.AptitudeChapter).filter(models.AptitudeChapter.id == chapter_id).first()
+    if not db_chapter:
+        raise HTTPException(status_code=404, detail="Chapter not found")
+        
+    db.delete(db_chapter)
+    db.commit()
+    return {"message": "Chapter deleted successfully"}
+
+
+@router.post("/aptitude/problems", response_model=schemas.AptitudeProblem)
+def create_aptitude_problem(problem: schemas.AptitudeProblemCreate, db: Session = Depends(database.get_db)):
+    db_problem = models.AptitudeProblem(**problem.dict())
+    db.add(db_problem)
+    db.commit()
+    db.refresh(db_problem)
+    return db_problem
+
+
+@router.put("/aptitude/problems/{problem_id}", response_model=schemas.AptitudeProblem)
+def update_aptitude_problem(problem_id: int, problem: schemas.AptitudeProblemUpdate, db: Session = Depends(database.get_db)):
+    db_problem = db.query(models.AptitudeProblem).filter(models.AptitudeProblem.id == problem_id).first()
+    if not db_problem:
+        raise HTTPException(status_code=404, detail="Problem not found")
+        
+    update_data = problem.dict(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_problem, key, value)
+            
+    db.commit()
+    db.refresh(db_problem)
+    return db_problem
+
+
+@router.delete("/aptitude/problems/{problem_id}")
+def delete_aptitude_problem(problem_id: int, db: Session = Depends(database.get_db)):
+    db_problem = db.query(models.AptitudeProblem).filter(models.AptitudeProblem.id == problem_id).first()
     if not db_problem:
         raise HTTPException(status_code=404, detail="Problem not found")
         
